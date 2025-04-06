@@ -161,8 +161,13 @@ Despite these limitations, the dataset provides a robust overall picture of USAA
 if page == "General Analysis":
     st.title("USAAF Bombing Campaign Analysis")
     st.markdown("""
-    This dashboard presents analysis of the United States Army Air Forces (USAAF) bombing campaigns during World War II,
-    with a focus on the evolution of precision vs. area bombing strategies.
+    ## Challenging the Conventional Narrative
+    
+    Images of Dresden reduced to rubble and Hamburg engulfed in flames have become emblematic of Allied bombing campaigns. The conventional narrative suggests that the United States gradually abandoned its commitment to precision bombing in favor of devastating area attacks as the war intensified.
+    
+    **This dataset and analysis challenges that narrative.** Based on the first comprehensive digitization of every bombing raid in the European theater, this research reveals no evidence of the commonly asserted wholesale shift from precision to area bombing. While area bombing did increase modestly in later years and certain symbolic targets received disproportionately heavy treatment, precision methods persistently dominated throughout the conflict.
+    
+    Using a novel classification system that considers target designation, incendiary usage, and tonnage deployed, this analysis provides a data-driven perspective on the strategic bombing campaign.
     """)
     
     # Display general visualizations stacked vertically
@@ -170,69 +175,75 @@ if page == "General Analysis":
     img = load_image(f"{PLOT_PATH}/general/overall_score_distribution.png")
     if img:
         st.image(img)
-        st.markdown("*Distribution showing how USAAF missions scored on the area bombing scale (0=precise, 10=area)*")
+        st.markdown("*The mean area bombing score across all USAAF raids was 3.24 out of 10, with a median of 2.6—indicating that most bombing operations maintained significant precision elements throughout the war with a long-tail of outlier area bombing raids.*")
     
     st.subheader("Tonnage Distribution")
     img = load_image(f"{PLOT_PATH}/general/tonnage_distribution.png")
     if img:
         st.image(img)
-        st.markdown("*Distribution of bombing tonnage per raid across all USAAF missions*")
+        st.markdown("*Distribution of bombing tonnage per raid across all USAAF missions. While tonnage increased over time, this represented a quantitative rather than qualitative evolution in bombing operations.*")
     
     st.subheader("HE vs Incendiary Bombing by Year")
     img = load_image(f"{PLOT_PATH}/general/he_vs_incendiary_by_year.png")
     if img:
         st.image(img)
-        st.markdown("*Annual comparison of high explosive vs. incendiary bombing tonnage*")
+        st.markdown("*Annual comparison of high explosive vs. incendiary bombing tonnage. Notably, the incendiary percentage remained relatively flat throughout, contradicting the notion of a progressive shift toward fire-based area bombing tactics.*")
     
     st.subheader("Relationship Between Tonnage and Area Bombing")
     img = load_image(f"{PLOT_PATH}/general/tonnage_vs_score_relationship.png")
     if img:
         st.image(img)
-        st.markdown("*Correlation between bombing tonnage and area bombing scores*")
+        st.markdown("*Correlation between bombing tonnage and area bombing scores. The data shows that target type, not tonnage, was the primary determinant of whether a mission employed area bombing characteristics.*")
     
     st.subheader("Bombing Patterns Over Time")
     img = load_image(f"{PLOT_PATH}/general/quarterly_metrics_evolution.png")
     if img:
         st.image(img)
-        st.markdown("*Quarterly evolution of key bombing metrics throughout the war*")
+        st.markdown("*Quarterly evolution of key bombing metrics throughout the war. While there was a modest upward trend in area bombing scores over time (from approximately 2.5 to 3.5), this change falls well within one standard deviation and represents a refinement rather than transformation of bombing doctrine.*")
         
-    # st.subheader("Target Category Analysis")
-    # img = load_image(f"{PLOT_PATH}/general/he_vs_incendiary_by_category.png")
-    # if img:
-    #     st.image(img)
-    #     st.markdown("*HE vs. incendiary bombing by target category with area bombing scores*")
-    
     img = load_image(f"{PLOT_PATH}/general/tonnage_distribution_by_category.png")
     if img:
         st.image(img)
-        st.markdown("*Distribution of bombing tonnage across different target categories*")
+        st.markdown("*Distribution of bombing tonnage across different target categories. Transportation, oil refineries, and airfields received the most tonnage, reflecting strategic priorities.*")
     
     st.subheader("Temporal Analysis by Target Category")
     img = load_image(f"{PLOT_PATH}/general/year_category_score_heatmap.png")
     if img:
         st.image(img)
-        st.markdown("*Evolution of area bombing scores by target category and year*")
+        st.markdown("*Evolution of area bombing scores by target category and year. No category demonstrated the dramatic escalation that would indicate either a deliberate concealment of area tactics or a fundamental doctrinal shift.*")
         
     st.subheader("Monthly Progression")
     img = load_image(f"{PLOT_PATH}/general/monthly_score_progression.png")
     if img:
         st.image(img)
-        st.markdown("*Monthly progression of area bombing scores with marker size representing tonnage*")
+        st.markdown("*Monthly progression of area bombing scores with marker size representing tonnage. The modest increase in area bombing coincided with the period of heaviest overall bombing activity, suggesting operational scale rather than doctrinal transformation drove these changes.*")
     
     # Add the category by year visualization
     st.subheader("Distribution of Bombing Categories by Year")
     img = load_image(f"{PLOT_PATH}/years/category_by_year.png")
     if img:
         st.image(img)
-        st.markdown("*Evolution of bombing categories throughout the war years*")
+        st.markdown("*Evolution of bombing categories throughout the war years. Very precise bombing (scores 0-2) maintained a relatively stable proportion throughout most of the war. Mixed bombing approaches (scores 4-6) increased modestly from around 10% early in the war to 18.6% at their peak.*")
     
     # Add complete dataset view
     st.markdown("---")
     st.subheader("Explore Complete Dataset")
+    st.markdown("""
+    This dashboard presents the first comprehensive digitization of the United States Strategic Bombing Survey (USSBS) attack-by-attack data, 
+    involving over 8,000 early computer readouts from the National Archives. Explore the data below to examine patterns across the entire campaign.
+    """)
     display_data_table(df)
 
 elif page == "City Analysis":
     st.title("City-Specific Bombing Analysis")
+    st.markdown("""
+    The city-specific analysis reveals important variations in bombing patterns. While most cities maintained predominantly precision bombing characteristics,
+    certain symbolic targets like Berlin received significantly different treatment.
+    
+    Berlin stands as an exception to overall patterns, with only 23% of operations qualifying as very precise or precise bombing, 
+    and nearly 27% constituting clear or heavy area bombing. The average incendiary percentage for Berlin proper reached 46%—extraordinarily high compared to other targets.
+    This exceptional treatment of the Nazi capital suggests that emotional or symbolic factors influenced targeting decisions for particularly emblematic objectives.
+    """)
     
     # Get cities with available visualizations
     cities_with_viz = get_cities_with_visualizations()
@@ -258,7 +269,7 @@ elif page == "City Analysis":
             if img:
                 st.subheader("Area Bombing Score Distribution")
                 st.image(img)
-                st.markdown(f"*Distribution of area bombing scores for raids targeting {selected_city}*")
+                st.markdown(f"*Distribution of area bombing scores for raids targeting {selected_city}. The distribution reveals the extent to which operations against this city adhered to or deviated from precision bombing approaches.*")
         else:
             st.info(f"No score distribution visualization available for {selected_city}")
         
@@ -269,7 +280,7 @@ elif page == "City Analysis":
             if img:
                 st.subheader("Tonnage vs Incendiary Percentage")
                 st.image(img)
-                st.markdown(f"*Relationship between bombing tonnage and incendiary percentage for {selected_city} raids*")
+                st.markdown(f"*Relationship between bombing tonnage and incendiary percentage for {selected_city} raids. Incendiary percentage is a key indicator of area bombing tactics, with higher percentages generally associated with urban area targeting rather than precision strikes.*")
         else:
             st.info(f"No tonnage visualization available for {selected_city}")
         
@@ -280,7 +291,7 @@ elif page == "City Analysis":
             if img:
                 st.subheader("Scores by Target Type")
                 st.image(img)
-                st.markdown(f"*Breakdown of area bombing scores by target type within {selected_city}*")
+                st.markdown(f"*Breakdown of area bombing scores by target type within {selected_city}. Different target types within the same city often received distinctly different bombing approaches.*")
         else:
             st.info(f"No target type visualization available for {selected_city}")
         
@@ -291,7 +302,7 @@ elif page == "City Analysis":
             if img:
                 st.subheader("Bombing Category Distribution")
                 st.image(img)
-                st.markdown(f"*Distribution of bombing categories for raids on {selected_city}*")
+                st.markdown(f"*Distribution of bombing categories for raids on {selected_city}. This chart shows the proportion of raids falling into each bombing category from very precise (0-2) to heavy area (8-10).*")
         else:
             st.info(f"No category distribution visualization available for {selected_city}")
         
@@ -304,14 +315,14 @@ elif page == "City Analysis":
                 img = load_image(schweinfurt_path)
                 if img:
                     st.image(img)
-                    st.markdown("*Timeline of Schweinfurt raids showing tonnage and area bombing scores*")
+                    st.markdown("*Timeline of Schweinfurt raids showing tonnage and area bombing scores. The Schweinfurt raids represent an important case study in precision bombing efforts against a critical industrial target.*")
             
             comparison_path = f"{PLOT_PATH}/cities/schweinfurt/schweinfurt_vs_other_bearings.png"
             if os.path.exists(comparison_path):
                 img = load_image(comparison_path)
                 if img:
                     st.image(img)
-                    st.markdown("*Comparison of Schweinfurt to other ball bearing factory targets*")
+                    st.markdown("*Comparison of Schweinfurt to other ball bearing factory targets. Despite their strategic importance, Schweinfurt raids maintained precision characteristics rather than shifting to area bombing tactics.*")
         
         # Add city-specific data table
         st.markdown("---")
@@ -321,6 +332,17 @@ elif page == "City Analysis":
 
 elif page == "Category Analysis":
     st.title("Target Category Analysis")
+    st.markdown("""
+    Breaking down the data by target category provides compelling evidence against a hidden shift toward area bombing. 
+    
+    One persistent claim in strategic bombing historiography deserves particular scrutiny: the assertion that transportation targets served as a pretext for area bombing.
+    Several prominent scholars have advanced this theory, arguing that transportation targeting masked deliberate attacks on civilian populations.
+    
+    Our comprehensive data analysis thoroughly refutes these claims. Transportation targets consistently maintained one of the most precise bombing profiles throughout the war, 
+    with a median area bombing score of just 2.4. The incendiary component averaged a mere 1.0% across all transportation raids, significantly lower than the dataset average.
+    
+    Examine different target categories below to see how bombing characteristics varied by target type.
+    """)
     
     # Category selection
     selected_category = st.selectbox("Select a target category:", categories)
@@ -336,7 +358,7 @@ elif page == "Category Analysis":
             if img:
                 st.subheader("Area Bombing Score Distribution")
                 st.image(img)
-                st.markdown(f"*Distribution of area bombing scores for {selected_category} targets*")
+                st.markdown(f"*Distribution of area bombing scores for {selected_category} targets. This distribution reveals the extent to which operations against this target category adhered to precision or area bombing approaches.*")
         else:
             st.info(f"No score distribution visualization available for {selected_category}")
         
@@ -347,7 +369,7 @@ elif page == "Category Analysis":
             if img:
                 st.subheader("Tonnage vs Incendiary Percentage")
                 st.image(img)
-                st.markdown(f"*Relationship between bombing tonnage and incendiary percentage for {selected_category} targets*")
+                st.markdown(f"*Relationship between bombing tonnage and incendiary percentage for {selected_category} targets. The pattern of incendiary usage provides insight into tactical approaches for this category.*")
         else:
             st.info(f"No tonnage visualization available for {selected_category}")
         
@@ -358,7 +380,7 @@ elif page == "Category Analysis":
             if img:
                 st.subheader("Scores by Target Type")
                 st.image(img)
-                st.markdown(f"*Breakdown of area bombing scores by target type within {selected_category} category*")
+                st.markdown(f"*Breakdown of area bombing scores by target type within {selected_category} category. Different target sub-types often received distinctly different bombing approaches.*")
         else:
             st.info(f"No target type visualization available for {selected_category}")
         
@@ -369,7 +391,7 @@ elif page == "Category Analysis":
             if img:
                 st.subheader("Component Score Analysis")
                 st.image(img)
-                st.markdown(f"*Radar chart showing component scores for {selected_category} targets*")
+                st.markdown(f"*Radar chart showing component scores for {selected_category} targets. This visualization breaks down how target type, incendiary percentage, and tonnage each contributed to the overall area bombing score.*")
         else:
             st.info(f"No component analysis visualization available for {selected_category}")
         
@@ -380,7 +402,7 @@ elif page == "Category Analysis":
             if img:
                 st.subheader("Bombing Category Distribution")
                 st.image(img)
-                st.markdown(f"*Distribution of bombing categories for {selected_category} targets*")
+                st.markdown(f"*Distribution of bombing categories for {selected_category} targets. This chart shows the proportion of raids falling into each bombing category from very precise (0-2) to heavy area (8-10).*")
         else:
             st.info(f"No category distribution visualization available for {selected_category}")
         
@@ -392,6 +414,20 @@ elif page == "Category Analysis":
 
 elif page == "Year Analysis":
     st.title("Yearly Bombing Analysis")
+    st.markdown("""
+    The conventional narrative suggests an inexorable progression from precision to area bombing as the war intensified. 
+    However, year-by-year analysis reveals a much more nuanced reality.
+    
+    Rather than a dramatic shift, we find relative stability throughout the conflict. While there was a modest upward trend 
+    in area bombing scores over time (from approximately 2.5 to 3.5), this change falls well within one standard deviation 
+    and represents a refinement rather than transformation of bombing doctrine.
+    
+    The yearly distribution of bombing categories shows that very precise bombing (scores 0-2) decreased slightly from 1940 to 1941 
+    but then maintained a relatively stable proportion throughout the remainder of the war. 
+    Mixed bombing approaches (scores 4-6) increased modestly from around 10% early in the war to 18.6% at their peak.
+    
+    Select a year below to examine its specific bombing patterns.
+    """)
     
     # Year selection
     selected_year = st.selectbox("Select a year:", years)
@@ -407,7 +443,7 @@ elif page == "Year Analysis":
             if img:
                 st.subheader("Area Bombing Score Distribution")
                 st.image(img)
-                st.markdown(f"*Distribution of area bombing scores during {selected_year}*")
+                st.markdown(f"*Distribution of area bombing scores during {selected_year}. This distribution reveals how bombing missions during this year fell along the precision-to-area spectrum.*")
         else:
             st.info(f"No score distribution visualization available for {selected_year}")
         
@@ -418,7 +454,7 @@ elif page == "Year Analysis":
             if img:
                 st.subheader("Tonnage vs Incendiary Percentage")
                 st.image(img)
-                st.markdown(f"*Relationship between bombing tonnage and incendiary percentage in {selected_year}*")
+                st.markdown(f"*Relationship between bombing tonnage and incendiary percentage in {selected_year}. The pattern reveals tactical approaches employed during this period of the war.*")
         else:
             st.info(f"No tonnage visualization available for {selected_year}")
         
@@ -429,7 +465,7 @@ elif page == "Year Analysis":
             if img:
                 st.subheader("Scores by Target Type")
                 st.image(img)
-                st.markdown(f"*Breakdown of area bombing scores by target type in {selected_year}*")
+                st.markdown(f"*Breakdown of area bombing scores by target type in {selected_year}. This visualization reveals how different target types were approached during this year.*")
         else:
             st.info(f"No target type visualization available for {selected_year}")
         
@@ -440,7 +476,7 @@ elif page == "Year Analysis":
             if img:
                 st.subheader("Component Score Analysis")
                 st.image(img)
-                st.markdown(f"*Radar chart showing component scores for raids in {selected_year}*")
+                st.markdown(f"*Radar chart showing component scores for raids in {selected_year}. This breaks down how target type, incendiary percentage, and tonnage each contributed to the overall area bombing score during this period.*")
         else:
             st.info(f"No component analysis visualization available for {selected_year}")
         
@@ -451,7 +487,7 @@ elif page == "Year Analysis":
             if img:
                 st.subheader("Bombing Category Distribution")
                 st.image(img)
-                st.markdown(f"*Distribution of bombing categories during {selected_year}*")
+                st.markdown(f"*Distribution of bombing categories during {selected_year}. This chart shows the proportion of raids falling into each bombing category from very precise (0-2) to heavy area (8-10).*")
         else:
             st.info(f"No category distribution visualization available for {selected_year}")
         
@@ -463,11 +499,26 @@ elif page == "Year Analysis":
 
 elif page == "Data Download":
     st.title("Download Raw Data")
-    
     st.markdown("""
-    ## Available Datasets
+    ## Research Methodology & Data Access
     
-    This section allows you to download the raw data used in this analysis.
+    This dashboard presents the first comprehensive digitization of the United States Strategic Bombing Survey (USSBS) attack-by-attack data.
+    This unprecedented effort involved processing over 8,000 early computer readouts from the National Archives, 
+    extracting locations, tonnage, munition types, and other critical operational details for every recorded bombing mission in the European theater.
+    
+    Prior historical analyses have typically focused on specific campaigns or cities without examining the complete dataset, 
+    leaving scholars unable to identify broader patterns or make definitive claims about the overall character of the air war.
+    
+    To systematically evaluate the nature of each bombing mission, we developed a three-dimensional scoring algorithm that considers:
+    
+    1. **Target designation**: Whether the USSBS categorized the target as a city area attack
+    2. **Incendiary proportion**: The percentage of incendiary munitions used relative to total tonnage
+    3. **Total tonnage**: Whether the mission employed excessive tonnage compared to operational norms
+    
+    This multidimensional approach provides a nuanced assessment of bombing character beyond the binary precision/area classification 
+    often employed in historical narratives.
+    
+    The complete datasets are available for download below.
     """)
     
     # USAAF Raids Data
@@ -519,25 +570,26 @@ elif page == "Data Download":
     st.markdown("---")
     
     st.markdown("""
-    ## Data Processing Information
+    ## Research Findings
     
-    The visualizations in this dashboard are based on pre-processed datasets derived from
-    historical bombing records. The processing workflow included:
+    The persistence of precision bombing throughout the war fundamentally challenges the traditional historical narrative. 
+    The conventional explanation—that a wholesale shift from precision to area bombing occurred—is not supported by the empirical evidence.
     
-    1. Data extraction from original bombing records
-    2. Cleaning and standardization of location names, dates, and metrics
-    3. Calculation of area bombing scores based on target type, tonnage, and incendiary percentages
-    4. Classification of raids into bombing categories
-    5. Generation of visualizations to analyze patterns and trends
+    Our comprehensive analysis of the raw data reveals a more nuanced reality. While area bombing did increase in specific instances like Berlin 
+    and occurred more frequently in absolute terms as operations expanded, it remained proportionally consistent and concentrated 
+    in particular symbolic targets rather than representing a doctrinal transformation.
     
-    For questions about the data processing methodology or to report issues,
-    please contact the repository maintainer.
+    The campaign was predominantly characterized by precision approaches, with a mean area bombing score of just 3.24 out of 10 across all raids. 
+    This finding directly contradicts the commonly held notion of a dramatic "0 to 1" shift from precision to area bombing by the USAAF throughout the war.
+    
+    Instead, the evidence points to a strategic continuity with tactical adaptations, maintaining precision as the fundamental operational approach 
+    even as the scale and complexity of the air campaign reached unprecedented levels.
     """)
 
 # Add footer
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: gray; font-size: 0.8em;">
-USAAF Bombing Campaign Analysis Dashboard | World War II Bombing Data
+USAAF Bombing Campaign Analysis Dashboard | The first comprehensive digitization of every WWII bombing raid in the European theater
 </div>
 """, unsafe_allow_html=True) 
