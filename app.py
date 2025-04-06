@@ -169,61 +169,61 @@ if page == "General Analysis":
     st.subheader("Overall Distribution of Area Bombing Scores")
     img = load_image(f"{PLOT_PATH}/general/overall_score_distribution.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Distribution showing how USAAF missions scored on the area bombing scale (0=precise, 10=area)*")
     
     st.subheader("Tonnage Distribution")
     img = load_image(f"{PLOT_PATH}/general/tonnage_distribution.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Distribution of bombing tonnage per raid across all USAAF missions*")
     
     st.subheader("HE vs Incendiary Bombing by Year")
     img = load_image(f"{PLOT_PATH}/general/he_vs_incendiary_by_year.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Annual comparison of high explosive vs. incendiary bombing tonnage*")
     
     st.subheader("Relationship Between Tonnage and Area Bombing")
     img = load_image(f"{PLOT_PATH}/general/tonnage_vs_score_relationship.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Correlation between bombing tonnage and area bombing scores*")
     
     st.subheader("Bombing Patterns Over Time")
     img = load_image(f"{PLOT_PATH}/general/quarterly_metrics_evolution.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Quarterly evolution of key bombing metrics throughout the war*")
         
     st.subheader("Target Category Analysis")
     img = load_image(f"{PLOT_PATH}/general/he_vs_incendiary_by_category.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*HE vs. incendiary bombing by target category with area bombing scores*")
     
     img = load_image(f"{PLOT_PATH}/general/tonnage_distribution_by_category.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Distribution of bombing tonnage across different target categories*")
     
     st.subheader("Temporal Analysis by Target Category")
     img = load_image(f"{PLOT_PATH}/general/year_category_score_heatmap.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Evolution of area bombing scores by target category and year*")
         
     st.subheader("Monthly Progression")
     img = load_image(f"{PLOT_PATH}/general/monthly_score_progression.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Monthly progression of area bombing scores with marker size representing tonnage*")
     
     # Add the category by year visualization
     st.subheader("Distribution of Bombing Categories by Year")
     img = load_image(f"{PLOT_PATH}/years/category_by_year.png")
     if img:
-        st.image(img, use_container_width=True)
+        st.image(img, width="100%")
         st.markdown("*Evolution of bombing categories throughout the war years*")
     
     # Add complete dataset view
@@ -257,7 +257,7 @@ elif page == "City Analysis":
             img = load_image(score_dist_path)
             if img:
                 st.subheader("Area Bombing Score Distribution")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Distribution of area bombing scores for raids targeting {selected_city}*")
         else:
             st.info(f"No score distribution visualization available for {selected_city}")
@@ -268,7 +268,7 @@ elif page == "City Analysis":
             img = load_image(tonnage_path)
             if img:
                 st.subheader("Tonnage vs Incendiary Percentage")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Relationship between bombing tonnage and incendiary percentage for {selected_city} raids*")
         else:
             st.info(f"No tonnage visualization available for {selected_city}")
@@ -279,7 +279,7 @@ elif page == "City Analysis":
             img = load_image(target_path)
             if img:
                 st.subheader("Scores by Target Type")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Breakdown of area bombing scores by target type within {selected_city}*")
         else:
             st.info(f"No target type visualization available for {selected_city}")
@@ -290,7 +290,7 @@ elif page == "City Analysis":
             img = load_image(category_path)
             if img:
                 st.subheader("Bombing Category Distribution")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Distribution of bombing categories for raids on {selected_city}*")
         else:
             st.info(f"No category distribution visualization available for {selected_city}")
@@ -303,14 +303,14 @@ elif page == "City Analysis":
             if os.path.exists(schweinfurt_path):
                 img = load_image(schweinfurt_path)
                 if img:
-                    st.image(img, use_container_width=True)
+                    st.image(img, width="100%")
                     st.markdown("*Timeline of Schweinfurt raids showing tonnage and area bombing scores*")
             
             comparison_path = f"{PLOT_PATH}/cities/schweinfurt/schweinfurt_vs_other_bearings.png"
             if os.path.exists(comparison_path):
                 img = load_image(comparison_path)
                 if img:
-                    st.image(img, use_container_width=True)
+                    st.image(img, width="100%")
                     st.markdown("*Comparison of Schweinfurt to other ball bearing factory targets*")
         
         # Add city-specific data table
@@ -335,7 +335,7 @@ elif page == "Category Analysis":
             img = load_image(score_dist_path)
             if img:
                 st.subheader("Area Bombing Score Distribution")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Distribution of area bombing scores for {selected_category} targets*")
         else:
             st.info(f"No score distribution visualization available for {selected_category}")
@@ -346,7 +346,7 @@ elif page == "Category Analysis":
             img = load_image(tonnage_path)
             if img:
                 st.subheader("Tonnage vs Incendiary Percentage")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Relationship between bombing tonnage and incendiary percentage for {selected_category} targets*")
         else:
             st.info(f"No tonnage visualization available for {selected_category}")
@@ -357,7 +357,7 @@ elif page == "Category Analysis":
             img = load_image(target_path)
             if img:
                 st.subheader("Scores by Target Type")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Breakdown of area bombing scores by target type within {selected_category} category*")
         else:
             st.info(f"No target type visualization available for {selected_category}")
@@ -368,7 +368,7 @@ elif page == "Category Analysis":
             img = load_image(radar_path)
             if img:
                 st.subheader("Component Score Analysis")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Radar chart showing component scores for {selected_category} targets*")
         else:
             st.info(f"No component analysis visualization available for {selected_category}")
@@ -379,7 +379,7 @@ elif page == "Category Analysis":
             img = load_image(category_path)
             if img:
                 st.subheader("Bombing Category Distribution")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Distribution of bombing categories for {selected_category} targets*")
         else:
             st.info(f"No category distribution visualization available for {selected_category}")
@@ -406,7 +406,7 @@ elif page == "Year Analysis":
             img = load_image(score_dist_path)
             if img:
                 st.subheader("Area Bombing Score Distribution")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Distribution of area bombing scores during {selected_year}*")
         else:
             st.info(f"No score distribution visualization available for {selected_year}")
@@ -417,7 +417,7 @@ elif page == "Year Analysis":
             img = load_image(tonnage_path)
             if img:
                 st.subheader("Tonnage vs Incendiary Percentage")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Relationship between bombing tonnage and incendiary percentage in {selected_year}*")
         else:
             st.info(f"No tonnage visualization available for {selected_year}")
@@ -428,7 +428,7 @@ elif page == "Year Analysis":
             img = load_image(target_path)
             if img:
                 st.subheader("Scores by Target Type")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Breakdown of area bombing scores by target type in {selected_year}*")
         else:
             st.info(f"No target type visualization available for {selected_year}")
@@ -439,7 +439,7 @@ elif page == "Year Analysis":
             img = load_image(radar_path)
             if img:
                 st.subheader("Component Score Analysis")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Radar chart showing component scores for raids in {selected_year}*")
         else:
             st.info(f"No component analysis visualization available for {selected_year}")
@@ -450,7 +450,7 @@ elif page == "Year Analysis":
             img = load_image(category_path)
             if img:
                 st.subheader("Bombing Category Distribution")
-                st.image(img, use_container_width=True)
+                st.image(img, width="100%")
                 st.markdown(f"*Distribution of bombing categories during {selected_year}*")
         else:
             st.info(f"No category distribution visualization available for {selected_year}")
