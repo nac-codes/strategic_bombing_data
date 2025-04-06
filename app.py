@@ -196,11 +196,11 @@ if page == "General Analysis":
         st.image(img)
         st.markdown("*Quarterly evolution of key bombing metrics throughout the war*")
         
-    st.subheader("Target Category Analysis")
-    img = load_image(f"{PLOT_PATH}/general/he_vs_incendiary_by_category.png")
-    if img:
-        st.image(img)
-        st.markdown("*HE vs. incendiary bombing by target category with area bombing scores*")
+    # st.subheader("Target Category Analysis")
+    # img = load_image(f"{PLOT_PATH}/general/he_vs_incendiary_by_category.png")
+    # if img:
+    #     st.image(img)
+    #     st.markdown("*HE vs. incendiary bombing by target category with area bombing scores*")
     
     img = load_image(f"{PLOT_PATH}/general/tonnage_distribution_by_category.png")
     if img:
