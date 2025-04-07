@@ -189,11 +189,11 @@ if page == "General Analysis":
         st.image(img)
         st.markdown("*Annual comparison of high explosive vs. incendiary bombing tonnage. Notably, the incendiary percentage remained relatively flat throughout, contradicting the notion of a progressive shift toward fire-based area bombing tactics.*")
     
-    st.subheader("Relationship Between Tonnage and Area Bombing")
-    img = load_image(f"{PLOT_PATH}/general/tonnage_vs_score_relationship.png")
-    if img:
-        st.image(img)
-        st.markdown("*Correlation between bombing tonnage and area bombing scores. The data shows that target type, not tonnage, was the primary determinant of whether a mission employed area bombing characteristics.*")
+    # st.subheader("Relationship Between Tonnage and Area Bombing")
+    # img = load_image(f"{PLOT_PATH}/general/tonnage_vs_score_relationship.png")
+    # if img:
+    #     st.image(img)
+    #     st.markdown("*Correlation between bombing tonnage and area bombing scores. The data shows that target type, not tonnage, was the primary determinant of whether a mission employed area bombing characteristics.*")
     
     st.subheader("Bombing Patterns Over Time")
     img = load_image(f"{PLOT_PATH}/general/quarterly_metrics_evolution.png")
@@ -201,10 +201,10 @@ if page == "General Analysis":
         st.image(img)
         st.markdown("*Quarterly evolution of key bombing metrics throughout the war. While there was a modest upward trend in area bombing scores over time (from approximately 2.5 to 3.5), this change falls well within one standard deviation and represents a refinement rather than transformation of bombing doctrine.*")
         
-    img = load_image(f"{PLOT_PATH}/general/tonnage_distribution_by_category.png")
+    img = load_image(f"{PLOT_PATH}/categories/category_comparison.png")
     if img:
         st.image(img)
-        st.markdown("*Distribution of bombing tonnage across different target categories. Transportation, oil refineries, and airfields received the most tonnage, reflecting strategic priorities.*")
+        st.markdown("*Distribution of area bombing scores across different target categories.*")
     
     st.subheader("Temporal Analysis by Target Category")
     img = load_image(f"{PLOT_PATH}/general/year_category_score_heatmap.png")
@@ -213,10 +213,10 @@ if page == "General Analysis":
         st.markdown("*Evolution of area bombing scores by target category and year. No category demonstrated the dramatic escalation that would indicate either a deliberate concealment of area tactics or a fundamental doctrinal shift.*")
         
     st.subheader("Monthly Progression")
-    img = load_image(f"{PLOT_PATH}/general/monthly_score_progression.png")
+    img = load_image(f"{PLOT_PATH}/years/yearly_evolution.png")
     if img:
         st.image(img)
-        st.markdown("*Monthly progression of area bombing scores with marker size representing tonnage. The modest increase in area bombing coincided with the period of heaviest overall bombing activity, suggesting operational scale rather than doctrinal transformation drove these changes.*")
+        st.markdown("*Yearly progression of area bombing scores. The modest increase in area bombing coincided with the period of heaviest overall bombing activity, suggesting operational scale rather than doctrinal transformation drove these changes.*")
     
     # Add the category by year visualization
     st.subheader("Distribution of Bombing Categories by Year")
