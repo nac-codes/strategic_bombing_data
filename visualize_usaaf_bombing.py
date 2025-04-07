@@ -15,38 +15,25 @@ plt.rcParams['figure.dpi'] = 300
 for dir_name in ['plots/usaaf/years', 'plots/usaaf/categories', 'plots/usaaf/cities', 'plots/usaaf/general']:
     os.makedirs(dir_name, exist_ok=True)
 
-# Load and merge data - using USAAF filtered data
-print("Loading USAAF-only data...")
-raids_classification = pd.read_csv('processed_data/usaaf/usaaf_raids_classification_with_category.csv')
-raids_summary = pd.read_csv('processed_data/raids_summary.csv')
+# Load and merge data - using filtered USAAF data
+print("Loading USAAF-only filtered data...")
+df = pd.read_csv('processed_data/usaaf/usaaf_raids_full.csv')
 
-# Display column names to debug
-print("Raids classification columns:", raids_classification.columns.tolist())
-print("Raids summary columns:", raids_summary.columns.tolist())
-
-# Create a unique identifier to merge datasets
-raids_classification['raid_id'] = raids_classification.index
-raids_summary['raid_id'] = raids_summary.index
-
-# Merge datasets
-print("Merging datasets...")
-# Use the dataset that already has all needed columns
-df = raids_classification.copy()
-
-# Clean up year data - it should be 1940s
+# Clean up year data if needed
 print("Cleaning year data...")
-df['YEAR'] = df['YEAR'].fillna(0).astype(float)  # Handle missing values
-df['Year'] = (1940 + df['YEAR']).astype(int)
-# Handle any outlier years
-df.loc[df['Year'] < 1939, 'Year'] = 1940
-df.loc[df['Year'] > 1946, 'Year'] = 1945
+if 'Year' not in df.columns and 'YEAR' in df.columns:
+    df['YEAR'] = df['YEAR'].fillna(0).astype(float)  # Handle missing values
+    df['Year'] = (1940 + df['YEAR']).astype(int)
+    # Handle any outlier years - 1940 is already excluded
+    df.loc[df['Year'] < 1941, 'Year'] = 1941
+    df.loc[df['Year'] > 1946, 'Year'] = 1945
 
 # Create a clean location field
 df['Location'] = df['target_location'].str.strip().str.upper()
 
-# Identify top 10 cities
-top_cities = df['Location'].value_counts().head(10).index.tolist()
-print(f"Top 10 most raided cities by USAAF: {', '.join(top_cities)}")
+# Identify top 50 cities
+top_cities = df['Location'].value_counts().head(50).index.tolist()
+print(f"Top 50 most raided cities by USAAF: {', '.join(top_cities)}")
 
 # Add Schweinfurt to the analysis if not already in top cities
 if 'SCHWEINFURT' not in top_cities:
@@ -165,7 +152,7 @@ print("Generating plots by year...")
 # 1. Generate plots by year
 years = sorted(df['Year'].unique())
 for year in years:
-    if pd.notna(year) and year >= 1940 and year <= 1945:
+    if pd.notna(year) and year >= 1941 and year <= 1945:
         year_data = df[df['Year'] == year]
         if len(year_data) > 0:
             print(f"  Processing year {year} ({len(year_data)} raids)")
@@ -176,7 +163,7 @@ print("Creating year evolution plots...")
 # 1. Evolution of bombing scores over years
 plt.figure(figsize=(14, 8))
 yearly_scores = df.groupby('Year')['AREA_BOMBING_SCORE_NORMALIZED'].agg(['mean', 'median', 'std']).reset_index()
-yearly_scores = yearly_scores[(yearly_scores['Year'] >= 1940) & (yearly_scores['Year'] <= 1945)]
+yearly_scores = yearly_scores[(yearly_scores['Year'] >= 1941) & (yearly_scores['Year'] <= 1945)]
 
 plt.errorbar(yearly_scores['Year'], yearly_scores['mean'], yerr=yearly_scores['std'], 
              fmt='o-', capsize=5, capthick=2, label='Mean Score ± Std Dev')
@@ -195,7 +182,7 @@ plt.close()
 # 2. Stacked bar chart of bombing categories by year
 plt.figure(figsize=(14, 8))
 year_cat = pd.crosstab(df['Year'], df['Score Category'])
-year_cat = year_cat.loc[year_cat.index.astype(float).astype(int).isin(range(1940, 1946))]
+year_cat = year_cat.loc[year_cat.index.astype(float).astype(int).isin(range(1941, 1946))]
 year_cat_pct = year_cat.div(year_cat.sum(axis=1), axis=0) * 100
 
 year_cat_pct.plot(kind='bar', stacked=True, colormap='viridis')
@@ -260,8 +247,8 @@ pivot_data = df.pivot_table(
     columns='Year',
     aggfunc='mean'
 )
-# Focus on years 1940-1945 and categories with sufficient data
-pivot_filtered = pivot_data.loc[pivot_data.count(axis=1) >= 3, [y for y in range(1940, 1946) if y in pivot_data.columns]]
+# Focus on years 1941-1945 and categories with sufficient data
+pivot_filtered = pivot_data.loc[pivot_data.count(axis=1) >= 3, [y for y in range(1941, 1946) if y in pivot_data.columns]]
 pivot_filtered = pivot_filtered.dropna(thresh=3)  # Drop rows with too many NaNs
 
 # Set consistent color scale for heatmap
@@ -320,8 +307,8 @@ city_year_counts = df[df['Location'].isin(top5_cities)].pivot_table(
     aggfunc='mean'
 )
 
-# Filter to just 1940-1945
-city_year_counts = city_year_counts.loc[city_year_counts.index.astype(int).isin(range(1940, 1946))]
+# Filter to just 1941-1945
+city_year_counts = city_year_counts.loc[city_year_counts.index.astype(int).isin(range(1941, 1946))]
 
 for city in city_year_counts.columns:
     plt.plot(city_year_counts.index, city_year_counts[city], 'o-', linewidth=2, markersize=8, label=city)
@@ -491,7 +478,7 @@ bombing_by_year = df.groupby('Year').agg({
 }).reset_index()
 
 # Plot stacked bar chart
-bombing_years = bombing_by_year[(bombing_by_year['Year'] >= 1940) & (bombing_by_year['Year'] <= 1945)]
+bombing_years = bombing_by_year[(bombing_by_year['Year'] >= 1941) & (bombing_by_year['Year'] <= 1945)]
 bar_width = 0.8
 plt.bar(bombing_years['Year'], bombing_years['HE_TONS'], 
         color='steelblue', width=bar_width, label='HE Bombs')
@@ -518,307 +505,9 @@ plt.close()
 # 4. Monthly Progression of Bombing Scores
 plt.figure(figsize=(16, 8))
 # Create month-year field, handling NaN values
-df['Month'] = df['MONTH'].fillna(1).astype(float).astype(int)  # Convert to float first then int
-df['Month-Year'] = df['Year'].astype(str) + '-' + df['Month'].astype(str).str.zfill(2)
-
-# Filter to only include dates within the war period with sufficient data
-monthly_data = df.groupby('Month-Year').agg({
-    'AREA_BOMBING_SCORE_NORMALIZED': ['mean', 'median', 'count'],
-    'TOTAL_TONS': 'sum'
-}).reset_index()
-monthly_data.columns = ['Month-Year', 'Mean_Score', 'Median_Score', 'Raid_Count', 'Total_Tons']
-# Filter to months with at least 5 raids
-monthly_data = monthly_data[monthly_data['Raid_Count'] >= 5]
-
-# Sort by chronological order
-monthly_data['Sort_Order'] = pd.to_datetime(monthly_data['Month-Year'], format='%Y-%m', errors='coerce')
-monthly_data = monthly_data.dropna(subset=['Sort_Order'])  # Drop any rows with invalid dates
-monthly_data = monthly_data.sort_values('Sort_Order')
-
-# Create scatter plot with size representing tonnage
-plt.figure(figsize=(16, 8))
-scatter = plt.scatter(range(len(monthly_data)), 
-                     monthly_data['Mean_Score'],
-                     s=monthly_data['Total_Tons']/100,  # Scale down for better visibility
-                     c=monthly_data['Mean_Score'],
-                     cmap='viridis',
-                     alpha=0.7)
-
-plt.plot(range(len(monthly_data)), monthly_data['Mean_Score'], 'k--', alpha=0.5)
-plt.colorbar(scatter, label='Mean Area Bombing Score')
-
-plt.title('Monthly Progression of Area Bombing Scores (USAAF)', fontsize=18)
-plt.xlabel('Month-Year', fontsize=14)
-plt.ylabel('Mean Area Bombing Score', fontsize=14)
-plt.xticks(range(len(monthly_data)), monthly_data['Month-Year'], rotation=90, fontsize=10)
-plt.ylim(0, 10)
-plt.grid(True, alpha=0.3)
-
-# Add annotation for significant points (high or low scores)
-for i, row in enumerate(monthly_data.itertuples()):
-    if row.Mean_Score > 8 or row.Mean_Score < 2:
-        plt.annotate(f"{row.Mean_Score:.1f}\n({row.Raid_Count} raids)",
-                    (i, row.Mean_Score),
-                    xytext=(0, 10),
-                    textcoords='offset points',
-                    ha='center',
-                    fontsize=9,
-                    bbox=dict(boxstyle='round,pad=0.3', fc='white', alpha=0.7))
-
-plt.tight_layout()
-plt.savefig('plots/usaaf/general/monthly_score_progression.png', dpi=300)
-plt.close()
-
-# 5. Tonnage Analysis - Relationship with Area Bombing Score
-plt.figure(figsize=(14, 10))
-
-# Create a scatter plot with hexbin for density
-hex_plot = plt.hexbin(df['TOTAL_TONS'].clip(0, 500), df['AREA_BOMBING_SCORE_NORMALIZED'], 
-                     gridsize=30, cmap='viridis', mincnt=1)
-plt.colorbar(hex_plot, label='Count')
-
-# Add trend line
-x = df['TOTAL_TONS'].clip(0, 500)
-y = df['AREA_BOMBING_SCORE_NORMALIZED']
-z = np.polyfit(x, y, 1)
-p = np.poly1d(z)
-plt.plot(np.linspace(0, 500, 100), p(np.linspace(0, 500, 100)), "r--", 
-         label=f"Trend: y={z[0]:.4f}x+{z[1]:.2f}")
-
-# Average scores by tonnage bins
-tonnage_bins = [0, 50, 100, 200, 300, 400, 500]
-df['TONNAGE_BIN'] = pd.cut(df['TOTAL_TONS'].clip(0, 500), bins=tonnage_bins)
-bin_avgs = df.groupby('TONNAGE_BIN')['AREA_BOMBING_SCORE_NORMALIZED'].mean()
-
-bin_centers = [(tonnage_bins[i] + tonnage_bins[i+1])/2 for i in range(len(tonnage_bins)-1)]
-plt.plot(bin_centers, bin_avgs, 'go-', label='Bin Averages')
-
-plt.title('Relationship Between Bombing Tonnage and Area Bombing Score', fontsize=18)
-plt.xlabel('Total Tons Dropped (clipped at 500)', fontsize=14)
-plt.ylabel('Area Bombing Score', fontsize=14)
-plt.ylim(0, 10)
-plt.xlim(0, 500)
-plt.grid(True, alpha=0.3)
-plt.legend(fontsize=12)
-plt.tight_layout()
-plt.savefig('plots/usaaf/general/tonnage_vs_score_relationship.png', dpi=300)
-plt.close()
-
-# 6. HE vs Incendiary Analysis by Target Category
-plt.figure(figsize=(16, 10))
-
-# Calculate total tonnage by category and bomb type
-category_bombing = df.groupby('CATEGORY').agg({
-    'HE_TONS': 'sum',
-    'INCENDIARY_TONS': 'sum',
-    'TOTAL_TONS': 'sum',
-    'AREA_BOMBING_SCORE_NORMALIZED': 'mean'
-}).reset_index()
-
-# Filter to top categories by tonnage
-top_categories_by_tonnage = category_bombing.nlargest(10, 'TOTAL_TONS')
-# Sort by area bombing score
-top_categories_by_tonnage = top_categories_by_tonnage.sort_values('AREA_BOMBING_SCORE_NORMALIZED', ascending=False)
-
-# Create stacked bar chart
-bar_width = 0.7
-x = np.arange(len(top_categories_by_tonnage))
-plt.bar(x, top_categories_by_tonnage['HE_TONS'], 
-       color='steelblue', width=bar_width, label='HE Bombs')
-plt.bar(x, top_categories_by_tonnage['INCENDIARY_TONS'], 
-       bottom=top_categories_by_tonnage['HE_TONS'], color='darkorange', width=bar_width, 
-       label='Incendiary Bombs')
-
-# Add area bombing score line (dual y-axis)
-ax2 = plt.twinx()
-ax2.plot(x, top_categories_by_tonnage['AREA_BOMBING_SCORE_NORMALIZED'], 'ro-', label='Area Bombing Score')
-ax2.set_ylim(0, 10)
-ax2.set_ylabel('Average Area Bombing Score', fontsize=14, color='darkred')
-ax2.tick_params(axis='y', colors='darkred')
-
-# Set x-axis labels
-plt.xticks(x, top_categories_by_tonnage['CATEGORY'], rotation=45, ha='right', fontsize=12)
-plt.xlabel('Target Category', fontsize=14)
-plt.title('HE vs Incendiary Bombing by Target Category (USAAF)', fontsize=18)
-
-# Add two legends
-lines1, labels1 = plt.gca().get_legend_handles_labels()
-lines2, labels2 = ax2.get_legend_handles_labels()
-plt.legend(lines1 + lines2, labels1 + labels2, loc='upper right', fontsize=12)
-
-plt.grid(True, alpha=0.3, axis='y')
-plt.tight_layout()
-plt.savefig('plots/usaaf/general/he_vs_incendiary_by_category.png', dpi=300)
-plt.close()
-
-# 7. Tonnage distribution by category 
-plt.figure(figsize=(14, 8))
-# Create box plots of tonnage by target category
-top_categories = category_bombing.nlargest(12, 'TOTAL_TONS')['CATEGORY'].tolist()
-category_filtered_df = df[df['CATEGORY'].isin(top_categories)].copy()
-
-plt.figure(figsize=(14, 8))
-sns.boxplot(x='CATEGORY', y='TOTAL_TONS', data=category_filtered_df,
-           order=top_categories, palette='viridis')
-plt.title('Distribution of Bombing Tonnage by Target Category (USAAF)', fontsize=18)
-plt.xlabel('Target Category', fontsize=14)
-plt.ylabel('Total Tons per Raid', fontsize=14)
-plt.xticks(rotation=45, ha='right', fontsize=12)
-plt.ylim(0, 500)  # Clip at 500 tons for better visualization
-plt.grid(True, alpha=0.3, axis='y')
-plt.tight_layout()
-plt.savefig('plots/usaaf/general/tonnage_distribution_by_category.png', dpi=300)
-plt.close()
-
-# 8. Schweinfurt-specific analysis
-print("Creating Schweinfurt-specific analysis...")
-schweinfurt_data = df[df['Location'] == 'SCHWEINFURT'].copy()
-
-if len(schweinfurt_data) > 0:
-    # Create a dedicated Schweinfurt directory
-    os.makedirs('plots/usaaf/cities/schweinfurt', exist_ok=True)
-    
-    # A. Schweinfurt raids timeline
-    plt.figure(figsize=(14, 8))
-    
-    # Clean and process date fields - handle mixture of types and ranges
-    def clean_day(day_value):
-        if pd.isna(day_value):
-            return 1
-        
-        # Convert to string first
-        day_str = str(day_value)
-        
-        # If it contains a hyphen (range), take the first value
-        if '-' in day_str:
-            day_str = day_str.split('-')[0]
-            
-        # Try to convert to integer, if fails use 1
-        try:
-            return int(float(day_str))
-        except (ValueError, TypeError):
-            return 1
-    
-    schweinfurt_data['Day'] = schweinfurt_data['DAY'].apply(clean_day)
-    schweinfurt_data['Month'] = schweinfurt_data['MONTH'].fillna(1).astype(float).astype(int)
-    
-    # Create date field
-    schweinfurt_data['Date'] = pd.to_datetime(
-        (1940 + schweinfurt_data['YEAR'].astype(int)).astype(str) + '-' + 
-        schweinfurt_data['Month'].astype(str).str.zfill(2) + '-' + 
-        schweinfurt_data['Day'].astype(str).str.zfill(2),
-        errors='coerce'  # Handle any invalid dates
-    )
-    
-    # Drop any rows with invalid dates
-    schweinfurt_data = schweinfurt_data.dropna(subset=['Date'])
-    schweinfurt_data = schweinfurt_data.sort_values('Date')
-    
-    # Create scatter plot of raids
-    plt.scatter(range(len(schweinfurt_data)), schweinfurt_data['AREA_BOMBING_SCORE_NORMALIZED'], 
-               s=schweinfurt_data['TOTAL_TONS']*2, c=schweinfurt_data['INCENDIARY_PERCENT'], 
-               cmap='inferno', alpha=0.8)
-    plt.colorbar(label='Incendiary Percentage')
-    
-    # Add connecting line
-    plt.plot(range(len(schweinfurt_data)), schweinfurt_data['AREA_BOMBING_SCORE_NORMALIZED'], 
-            'k--', alpha=0.5)
-    
-    # Add date labels
-    date_labels = schweinfurt_data['Date'].dt.strftime('%b %d, %Y')
-    plt.xticks(range(len(schweinfurt_data)), date_labels, rotation=45, ha='right', fontsize=10)
-    
-    # Add annotation with tonnage
-    for i, row in enumerate(schweinfurt_data.itertuples()):
-        plt.annotate(f"{row.TOTAL_TONS:.1f} tons",
-                    (i, row.AREA_BOMBING_SCORE_NORMALIZED),
-                    xytext=(0, 10),
-                    textcoords='offset points',
-                    ha='center',
-                    fontsize=9,
-                    bbox=dict(boxstyle='round,pad=0.3', fc='white', alpha=0.7))
-    
-    plt.title('Schweinfurt Bombing Raids Timeline (USAAF)', fontsize=18)
-    plt.xlabel('Raid Date', fontsize=14)
-    plt.ylabel('Area Bombing Score', fontsize=14)
-    plt.ylim(0, 10)
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.savefig('plots/usaaf/cities/schweinfurt/raids_timeline.png', dpi=300)
-    plt.close()
-    
-    # B. Schweinfurt vs Other Ball Bearing Factories comparison
-    # Try to find other ball bearing targets
-    bearing_targets = df[df['target_name'].str.contains('BEAR|BALL|ROLLER', case=False, na=False)]
-    # Filter out Schweinfurt itself
-    other_bearing_targets = bearing_targets[bearing_targets['Location'] != 'SCHWEINFURT']
-    
-    if len(other_bearing_targets) > 0:
-        # Comparison data
-        comparison_data = pd.DataFrame({
-            'Location': ['Schweinfurt', 'Other Bearing Factories'],
-            'Avg_Score': [schweinfurt_data['AREA_BOMBING_SCORE_NORMALIZED'].mean(),
-                         other_bearing_targets['AREA_BOMBING_SCORE_NORMALIZED'].mean()],
-            'Avg_Tonnage': [schweinfurt_data['TOTAL_TONS'].mean(),
-                           other_bearing_targets['TOTAL_TONS'].mean()],
-            'Avg_Incendiary': [schweinfurt_data['INCENDIARY_PERCENT'].mean(),
-                              other_bearing_targets['INCENDIARY_PERCENT'].mean()],
-            'Raid_Count': [len(schweinfurt_data), len(other_bearing_targets)]
-        })
-        
-        # Create comparison chart
-        fig, ax1 = plt.subplots(figsize=(12, 8))
-        
-        x = np.arange(len(comparison_data))
-        bar_width = 0.35
-        
-        # Plot bombing scores on primary y-axis
-        bars1 = ax1.bar(x - bar_width/2, comparison_data['Avg_Score'], 
-                       bar_width, label='Avg Area Bombing Score', color='steelblue')
-        ax1.set_ylabel('Area Bombing Score', color='steelblue', fontsize=14)
-        ax1.tick_params(axis='y', labelcolor='steelblue')
-        ax1.set_ylim(0, 10)
-        
-        # Add a second y-axis for tonnage
-        ax2 = ax1.twinx()
-        bars2 = ax2.bar(x + bar_width/2, comparison_data['Avg_Tonnage'], 
-                       bar_width, label='Avg Tonnage per Raid', color='darkorange')
-        ax2.set_ylabel('Average Tonnage', color='darkorange', fontsize=14)
-        ax2.tick_params(axis='y', labelcolor='darkorange')
-        
-        # Add raid count
-        for i, count in enumerate(comparison_data['Raid_Count']):
-            plt.annotate(f"{count} raids",
-                       (i, comparison_data['Avg_Tonnage'][i] + 5),
-                       ha='center',
-                       va='bottom',
-                       fontsize=10,
-                       color='black')
-        
-        # Set x-axis labels
-        plt.xticks(x, comparison_data['Location'], fontsize=12)
-        plt.title('Schweinfurt vs Other Bearing Factory Targets (USAAF)', fontsize=18)
-        
-        # Add two legends
-        lines1, labels1 = ax1.get_legend_handles_labels()
-        lines2, labels2 = ax2.get_legend_handles_labels()
-        ax1.legend(lines1 + lines2, labels1 + labels2, loc='upper left', fontsize=12)
-        
-        plt.grid(True, alpha=0.3, axis='y')
-        plt.tight_layout()
-        plt.savefig('plots/usaaf/cities/schweinfurt/schweinfurt_vs_other_bearings.png', dpi=300)
-        plt.close()
-
-# 9. Advanced Temporal Analysis
-print("Creating advanced temporal analysis charts...")
-
-# A. Evolution of bombing characteristics over time (multi-metrics)
-plt.figure(figsize=(16, 12))
-
-# Create quarterly data to smooth trends, handling mixed types
 df['Clean_Month'] = df['MONTH'].fillna(1).astype(float).astype(int)
 df['Quarter_Date'] = pd.to_datetime(
-    (1940 + df['YEAR'].astype(int)).astype(str) + '-' + 
+    df['Year'].astype(str) + '-' + 
     df['Clean_Month'].astype(str).str.zfill(2) + '-01',
     errors='coerce'  # Handle any invalid dates
 )

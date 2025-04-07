@@ -96,8 +96,8 @@ def load_data():
         # Add Year column if it doesn't exist
         if 'Year' not in data.columns and 'YEAR' in data.columns:
             data['Year'] = (1940 + data['YEAR'].astype(float)).astype(int)
-            # Handle any outlier years
-            data.loc[data['Year'] < 1939, 'Year'] = 1940
+            # Handle any outlier years - 1940 already excluded in filtered data
+            data.loc[data['Year'] < 1941, 'Year'] = 1941
             data.loc[data['Year'] > 1946, 'Year'] = 1945
         
         # Normalize location names to uppercase to prevent duplicates with different case
@@ -138,7 +138,7 @@ try:
     df = load_data()
     cities = sorted(df["target_location"].unique())
     categories = sorted(df["CATEGORY"].unique())
-    years = sorted([y for y in range(1940, 1946)])
+    years = sorted([y for y in range(1941, 1946)])
 except Exception as e:
     st.sidebar.error(f"Error loading filter options: {e}")
     cities = []
@@ -422,9 +422,8 @@ elif page == "Year Analysis":
     in area bombing scores over time (from approximately 2.5 to 3.5), this change falls well within one standard deviation 
     and represents a refinement rather than transformation of bombing doctrine.
     
-    The yearly distribution of bombing categories shows that very precise bombing (scores 0-2) decreased slightly from 1940 to 1941 
-    but then maintained a relatively stable proportion throughout the remainder of the war. 
-    Mixed bombing approaches (scores 4-6) increased modestly from around 10% early in the war to 18.6% at their peak.
+    The yearly distribution of bombing categories shows that very precise bombing (scores 0-2) maintained a relatively stable 
+    proportion throughout the war. Mixed bombing approaches (scores 4-6) increased modestly from around 10% to 18.6% at their peak.
     
     Select a year below to examine its specific bombing patterns.
     """)
